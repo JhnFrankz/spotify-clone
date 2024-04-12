@@ -1,5 +1,5 @@
 import { usePlayerStore } from "@/store/playerStore";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Slider } from "./Slider";
 
 export const Pause = () => (
@@ -37,6 +37,52 @@ const CurrentSong = ({ image, title, artists }) => {
       </div>
     </div>
   );
+}
+
+const SongControl = ({ audio }) => {
+  const [currentTime, setCurrentTime] = useState(0);
+
+  useEffect(() => {
+    audio.current.addEventListener("timeupdate", handleTimeUpdate);
+    return () => { // cleanup that executes when the component unmounts
+      audio.current.removeEventListener("timeupdate", handleTimeUpdate);
+    }
+  }, []); // also it's valid don't use []
+
+  const handleTimeUpdate = () => {
+    setCurrentTime(audio.current.currentTime); // 148s -> 2:28
+  }
+
+  const formatTime = time => {
+    if (time == null) return `0:00`;
+
+    const seconds = Math.floor(time % 60);
+    const minutes = Math.floor(time / 60);
+
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  const duration = audio?.current?.duration ?? 0;
+
+  return (
+    <div className="flex gap-x-3 text-xs pt-2">
+      <span className="opacity-50">{formatTime(currentTime)}</span>
+
+      <Slider
+        defaultValue={[0]}
+        value={[currentTime]} // volume is 0-1 and slider is 0-100
+        min={0}
+        max={audio?.current?.duration ?? 0} // if audio.current.duration is null, then 0
+        className="w-[500px]"
+        onValueChange={(value) => {
+          const [newCurrentTime] = value;
+          audio.current.currentTime = newCurrentTime;
+        }}
+      />
+
+      <span className="opacity-50">{formatTime(duration)}</span>
+    </div>
+  )
 }
 
 const VolumeControl = () => {
@@ -113,10 +159,13 @@ export function Player() {
       </div>
 
       <div className="grid place-content-center gap-4 flex-1">
-        <div className="flex justify-center">
+        <div className="flex justify-center flex-col items-center">
           <button className="bg-white rounded-full p-2" onClick={handleClick}>
             {isPlaying ? <Pause /> : <Play />}
           </button>
+
+          <SongControl audio={audioRef} />
+
           <audio ref={audioRef} />
         </div>
       </div>
