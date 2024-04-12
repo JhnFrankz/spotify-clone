@@ -66,21 +66,23 @@ const SongControl = ({ audio }) => {
 
   return (
     <div className="flex gap-x-3 text-xs pt-2">
-      <span className="opacity-50">{formatTime(currentTime)}</span>
+      <span className="opacity-50 w-12 text-right">{formatTime(currentTime)}</span>
 
       <Slider
         defaultValue={[0]}
         value={[currentTime]} // volume is 0-1 and slider is 0-100
         min={0}
         max={audio?.current?.duration ?? 0} // if audio.current.duration is null, then 0
-        className="w-[500px]"
+        className="w-[400px]"
         onValueChange={(value) => {
           const [newCurrentTime] = value;
           audio.current.currentTime = newCurrentTime;
         }}
       />
 
-      <span className="opacity-50">{formatTime(duration)}</span>
+      <span className="opacity-50 w-12">
+        {formatTime(duration)}
+      </span>
     </div>
   )
 }
@@ -154,7 +156,7 @@ export function Player() {
 
   return (
     <div className="flex flex-row justify-between w-full px-4 z-50">
-      <div>
+      <div className="w-[200px]">
         <CurrentSong {...currentMusic.song} />
       </div>
 
