@@ -81,7 +81,7 @@ const SongControl = ({ audio }) => {
       />
 
       <span className="opacity-50 w-12">
-        {formatTime(duration)}
+        {duration ? formatTime(duration) : "0:00"}
       </span>
     </div>
   )
@@ -155,7 +155,7 @@ export function Player() {
   }
 
   return (
-    <div className="flex flex-row justify-between w-full px-4 z-50">
+    <div className="flex flex-row justify-between w-full px-1 z-50">
       <div className="w-[200px]">
         <CurrentSong {...currentMusic.song} />
       </div>
