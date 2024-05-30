@@ -6,12 +6,12 @@ export async function GET({ params, request }) {
   const urlObjetct = new URL(url);
   const id = urlObjetct.searchParams.get("id");
 
-  const playlist = allPlaylists.find(playlist => playlist.id === id);
-  const songs = allSongs.filter(song => song.albumId === playlist?.albumId);
+  const playlist = allPlaylists.find((playlist) => playlist.id === id);
+  const songs = allSongs.filter((song) => song.albumId === playlist?.albumId);
 
   return new Response(JSON.stringify({ playlist, songs }), {
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   });
 }
